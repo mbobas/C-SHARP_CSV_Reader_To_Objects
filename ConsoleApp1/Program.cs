@@ -14,7 +14,7 @@ namespace ConsoleApp1
             Console.WriteLine("Hello World");
 
             Program program = new Program();
-            program.ReadFileCompany1();
+            program.ReadFileCompany2();
 
             Console.ReadKey();
 
@@ -62,7 +62,58 @@ namespace ConsoleApp1
             }
             return result;
         }
-        
+
+        public List<DzienPracy> ReadFileCompany2()
+        {
+            List<DzienPracy> result = new List<DzienPracy>();
+            StreamReader dayReader = new StreamReader("rcp2.csv");
+            string lastKodPracownika = "";
+
+            if (dayReader != null)
+            {
+                int line_number = 0;
+                while (!dayReader.EndOfStream)
+                {
+                    var line = dayReader.ReadLine();
+                    if (line_number >= 0) 
+                    {
+                        var values = line.Split(';');
+                        if (values[0] != lastKodPracownika)
+                        {
+                            DzienPracy day = new DzienPracy();
+                            day.KodPracownika = Convert.ToString(values[0]);
+                            day.Data = Convert.ToDateTime(values[1]);
+                            if (values[3] == "WE")
+                            {
+                                day.GodzinaWejscia = TimeSpan.Parse(values[2]+":00");
+                                var line2 = dayReader.ReadLine();
+                                var values2 = line2.Split(';');
+                                day.GodzinaWyjscia = TimeSpan.Parse(values2[2] + ":00");
+
+                            }
+                            else if (values[3] == "WY")
+                            {
+                                day.GodzinaWyjscia = TimeSpan.Parse(values[2]+":00");
+                                var line2 = dayReader.ReadLine();
+                                var values2 = line2.Split(';');
+                                day.GodzinaWejscia = TimeSpan.Parse(values2[2] + ":00");
+
+                            }
+
+                            Console.WriteLine(day.KodPracownika + " " + day.Data + " " + day.GodzinaWejscia
+                            + " " + day.GodzinaWyjscia + "\n");
+                            result.Add(day);
+                        } 
+
+                        
+                    }
+                    line_number++;
+                }
+                dayReader.Close();
+            }
+            return result;
+        }
+
     }
     
 }
