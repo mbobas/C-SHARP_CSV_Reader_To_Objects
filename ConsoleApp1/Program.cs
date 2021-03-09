@@ -11,19 +11,19 @@ namespace ConsoleApp1
     {
         static void Main(string[] args)
         {
-
             Program p = new Program();
             p.menu();
         }
         
-        public void wypisz(List<DzienPracy> dzien)
+        public void show(List<DzienPracy> dzien)
         {
             foreach (DzienPracy d in dzien)
             {
-                Console.WriteLine(d.KodPracownika + " " + d.Data + " " + d.GodzinaWejscia
-                           + " " + d.GodzinaWyjscia + "\n");
+                Console.WriteLine(d.KodPracownika + " | " + d.Data + " | " + d.GodzinaWejscia
+                           + " | " + d.GodzinaWyjscia + "\n");
             }
         }
+        
         public List<DzienPracy> ReadFileCompany1()
         {
             List<DzienPracy> result = new List<DzienPracy>();
@@ -99,7 +99,7 @@ namespace ConsoleApp1
                             day.Data = Convert.ToDateTime(values[1]);
                             try
                             {
-                                if (values[3] == "WE" /*&&values[2] != null*/)
+                                if (values[3] == "WE" )
                                 {
                                     day.GodzinaWejscia = TimeSpan.Parse(values[2] + ":00");
                                     var line2 = dayReader.ReadLine();
@@ -115,7 +115,7 @@ namespace ConsoleApp1
                                         continue;
                                     }
                                 }
-                                else if (values[3] == "WY" /*&&values[2] != null*/)
+                                else if (values[3] == "WY")
                                 {
                                     day.GodzinaWyjscia = TimeSpan.Parse(values[2] + ":00");
                                     var line2 = dayReader.ReadLine();
@@ -154,17 +154,22 @@ namespace ConsoleApp1
         public void menu()
         {
             Program program = new Program();
-            List<DzienPracy> dzien1 = program.ReadFileCompany1();
-            List<DzienPracy> dzien2 = program.ReadFileCompany2();
-            
+            List<DzienPracy> dayList1 = program.ReadFileCompany1();
+            List<DzienPracy> dayList2 = program.ReadFileCompany2();
+            program.SavaResults(dayList1, "dayList1");
+            program.SavaResults(dayList2, "dayList2");
+
+
             Console.WriteLine("***********MENU***********\n");
             Console.WriteLine("***Nacisnij odpowiedni klawisz***\n");
-            Console.WriteLine("Program Wczytuje 2 pliki o nazwach  rcp1.csv i rcp2.csv \n Dzieje sie to automatycznie z folderu ConsoleApp1\\bin\\Debug\\ \nczyli tego, w ktorym znajduje sie aplikacja \n\n");
-            Console.WriteLine("Dla pliku rcp1 program uwzględnia wyjątki braku danych w różnych komórkach, mimo, że przykładowy plik był kompletny\n");
-            Console.WriteLine("Dla pliku rcp2 program pomija wiersz jeśli na dany dzien przypadło jedno wejście lub wyjscie, robi to również w przypadku braku innych danych wejściowych. ");
+            Console.WriteLine("Program Wczytuje 2 pliki o nazwach  rcp1.csv i rcp2.csv\nDzieje sie to automatycznie z folderu ConsoleApp1\\bin\\Debug\\ \nczyli tego, w ktorym znajduje sie aplikacja. \n\n");
+            Console.WriteLine("Dla pliku rcp1 program uwzględnia wyjątki braku danych w różnych komórkach, mimo, że przykładowy plik był kompletny.\n");
+            Console.WriteLine("Dla pliku rcp2 program pomija wiersz jeśli na dany dzien przypadło jedno wejście lub wyjscie, robi to również w przypadku braku innych danych wejściowych.\n ");
 
             Console.WriteLine("Wciśnij (1), aby wyświetlic wczytaną listę dla pliku rcp1.csv\n");
             Console.WriteLine("Wciśnij (2), aby wyświetlic wczytaną listę dla pliku rcp2.csv\n");
+            Console.WriteLine("Dodatkowo Kopie wyświetlanych list są zapisywane w folderze głównym jako copy_of_dayList1.csv & copy_of_dayList2.csv \n");
+
             Console.WriteLine("Wciśnij (Q,q), aby wyjść\n");
 
             string userInput = Console.ReadLine();
@@ -172,13 +177,13 @@ namespace ConsoleApp1
             if (userInput == "1")
             {
                 Console.Clear();
-                program.wypisz(dzien1);
+                program.show(dayList1);
                 menu();
             }
             else if (userInput == "2")
             {
                 Console.Clear();
-                program.wypisz(dzien2);
+                program.show(dayList2);
                 menu();
             }
             else if (userInput == "q" || userInput == "Q")
@@ -187,6 +192,21 @@ namespace ConsoleApp1
             }
             Console.ReadKey();
 
+        }
+
+        public void SavaResults(List<DzienPracy> dzienToSave, string fileName) 
+        {
+           
+            StreamWriter writer = new StreamWriter($"copy_of_{fileName}.csv", false);
+            if (writer !=null)
+            {
+                writer.WriteLine(@"KodPracownika;Data_DD.MM.YY.;Data_HH:MM:SS;GodzinaWejscia;GodzinaWyjscia"); // name of columns
+                foreach(DzienPracy d in dzienToSave)
+                {
+                    writer.WriteLine(String.Format(@"{0};{1};{2};{3};", d.KodPracownika,d.Data,d.GodzinaWejscia,d.GodzinaWyjscia));
+                }
+                writer.Close();
+            }
         }
 
     }
