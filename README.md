@@ -1,8 +1,9 @@
 # C-SHARP_CSV_Reader_To_Objects 
-*reading a CSV
-*deleting an empty field
-*creating a object represented a DayOfWork
-*saving data to new csv files
+
+*reading a CSV.
+*deleting an empty field.
+*creating a object represented a DayOfWork.
+*saving data to new csv files.
 
 Application is taking to kind of .csv files. 
 Both file representing data of Registration of Work Time.
