@@ -5,7 +5,7 @@
 *creating a object represented a DayOfWork.
 *saving data to new csv files.
 
-Application is taking to kind of .csv files. 
+Application is taking two kinds of .csv files. 
 Both file representing data of Registration of Work Time.
 Here we have to contact kinds of files from two companies.
 
